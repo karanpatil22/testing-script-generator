@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Playwright Recorder — codegen → polished test</title>
+  <link rel="stylesheet" href="styles/app.css" />
+  <!--
+    The "Polish with AI" step runs server-side (see server.py / POST /api/polish)
+    so the Nvidia NIM key never reaches the browser and CORS is avoided.
+    Configure the key via the NVIDIA_API_KEY env var or a nim_key.txt file
+    next to server.py. Without a key, the raw codegen recording still works.
+  -->
+</head>
+<body>
+  <main class="app" role="main">
+    <!-- ── Header ──────────────────────────────────────────── -->
+    <header class="app-header">
+      <h1 class="app-title">
+        <span class="app-logo" aria-hidden="true">🎬</span>
+        Playwright Recorder
+      </h1>
+      <p class="app-subtitle">
+        Record your clicks with Playwright <code>codegen</code>, get a polished test
+        <span class="badge">Recording mode</span>
+      </p>
+    </header>
+
+    <!-- ── Recording panel ─────────────────────────────────── -->
+    <section class="panel-container">
+      <div class="tab-content active" id="panel-recording" role="region" aria-label="Record workflow">
+        <label class="field-label" for="record-url-input">
+          Application URL <span class="req">*</span>
+        </label>
+        <input
+          id="record-url-input"
+          class="text-input"
+          type="url"
+          placeholder="https://your-app.example.com/login"
+          aria-describedby="record-url-hint"
+        />
+        <p class="hint" id="record-url-hint">
+          The page where recording starts. Must begin with http:// or https://.
+        </p>
+
+        <label class="field-label" for="record-name-input">
+          Test name <span class="optional">(optional)</span>
+        </label>
+        <input
+          id="record-name-input"
+          class="text-input"
+          type="text"
+          placeholder="e.g. login and create project"
+        />
+
+        <label class="checkbox-row" for="record-polish">
+          <input id="record-polish" type="checkbox" checked />
+          <span>Polish recording with AI (Nvidia NIM) — falls back to raw codegen if unavailable</span>
+        </label>
+
+        <button class="generate-btn" id="record-btn">
+          ⏺ Start Recording
+        </button>
+
+        <div class="record-help" id="record-help">
+          <strong>How it works:</strong>
+          <ol>
+            <li>Click <em>Start Recording</em> — a Chromium window opens at your URL.</li>
+            <li>Interact with your app normally. Playwright captures stable locators for every click and input.</li>
+            <li><strong>Close the browser window</strong> when you're done — the script appears below.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Error display ───────────────────────────────────── -->
+    <div class="error-display" id="error-display" role="alert" hidden>
+      <span class="error-icon" aria-hidden="true">⚠️</span>
+      <span class="error-message" id="error-message"></span>
+      <button class="error-dismiss" id="error-dismiss" aria-label="Dismiss error">×</button>
+    </div>
+
+    <!-- ── Output section ──────────────────────────────────── -->
+    <section class="output-section" id="output-section" hidden>
+      <!-- Loading / recording state -->
+      <div class="loading" id="loading" hidden>
+        <div class="spinner" aria-hidden="true"></div>
+        <p class="loading-text" id="loading-text" role="status">
+          Recording… interact with your app, then close the browser window to finish.
+        </p>
+      </div>
+
+      <!-- Code output -->
+      <div class="code-wrapper" id="code-wrapper" hidden>
+        <div class="code-toolbar">
+          <span class="code-lang" id="code-filename">test_recorded.py</span>
+          <div class="toolbar-actions">
+            <div class="view-toggle" role="tablist" aria-label="Script view">
+              <button class="toggle-btn active" id="view-polished" role="tab" aria-selected="true">Polished</button>
+              <button class="toggle-btn" id="view-raw" role="tab" aria-selected="false">Raw codegen</button>
+            </div>
+            <button class="copy-btn" id="download-btn" aria-label="Download .py file">⬇ Download</button>
+            <button class="copy-btn" id="copy-btn" aria-label="Copy code to clipboard">📋 Copy</button>
+          </div>
+        </div>
+        <pre class="code-block"><code id="code-output" class="language-python"></code></pre>
+      </div>
+    </section>
+
+    <footer class="app-footer">
+      <p>
+        First time? Run <code>./setup.sh</code> then <code>./run.sh</code>.
+        Generated tests need: <code>pip install playwright pytest pytest-playwright pytest-asyncio</code> · <code>playwright install</code>
+      </p>
+    </footer>
+  </main>
+
+  <script type="module" src="scripts/main.js"></script>
+</body>
+</html>

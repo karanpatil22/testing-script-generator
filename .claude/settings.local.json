@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//tmp/**)",
+      "Bash(read id *)",
+      "Bash(grep -q 'id=\"__TRACKED_VAR__\"' index.html)"
+    ]
+  }
+}
