@@ -57,7 +57,7 @@ NVIDIA_API_KEY=nvapi-xxxxx ./run.sh
 echo "nvapi-xxxxx" > nim_key.txt
 ```
 
-Get a free key (prefixed `nvapi-`) at <https://build.nvidia.com>. Without a key,
+Get a free key (prefixed `nvapi-`) at <[https://build.nvidia.com](https://build.nvidia.com/models)>. Without a key,
 the app just shows the raw codegen script. **Do not commit `nim_key.txt`.**
 
 ## Files
